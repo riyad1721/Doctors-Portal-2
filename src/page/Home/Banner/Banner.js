@@ -48,8 +48,6 @@ const Banner = () => {
                     </Grid>
 
                 </Grid>
-
-
             </Container>
 
         </div>
