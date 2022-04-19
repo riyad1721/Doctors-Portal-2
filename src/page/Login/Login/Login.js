@@ -1,14 +1,21 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
-import React from 'react';
+import { Alert, Button, CircularProgress, Container, Grid, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import useAuth from '../../../hooks/useAuth';
 import loginImg from '../../../images/login.png';
 const Login = () => {
+    const [loginData, setLoginData] = useState({});
+    const { user, loginUser, signInWithGoogle, isLoading, authError } = useAuth();
 
     const handleOnBlur = e => {
-        const feild = e.target.name;
-        console.log(e.target.value);
+        const field = e.target.name;
+        const value = e.target.value;
+        const newLoginData = { ...loginData };
+        newLoginData[field] = value;
+        setLoginData(newLoginData);
     }
     const handleLoginSubmit = e => {
+        loginUser(loginData.email, loginData.password);
         e.preventDefault();
     }
     return (
@@ -39,6 +46,9 @@ const Login = () => {
                             to="/register">
                             <Button variant="text">New User? Please Register</Button>
                         </NavLink>
+                        {isLoading && <CircularProgress />}
+                        {user?.email && <Alert severity="success">Login successfully!</Alert>}
+                        {authError && <Alert severity="error">{authError}</Alert>}
 
                     </form>
                     <p>------------------------</p>

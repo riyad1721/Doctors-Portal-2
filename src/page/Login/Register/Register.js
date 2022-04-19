@@ -1,15 +1,27 @@
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
-import React from 'react';
+import { Alert, Button, CircularProgress, Container, Grid, TextField, Typography } from '@mui/material';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import useAuth from '../../../hooks/useAuth';
 import loginImg from '../../../images/login.png';
 
 const Register = () => {
+    const [loginData, setLoginData] = useState({});
+    const { user, registerUser, isLoading, authError } = useAuth();
 
 
     const handleOnBlur = e => {
-        console.log(e.target.value);
+        const field = e.target.name;
+        const value = e.target.value;
+        const newLoginData = { ...loginData };
+        newLoginData[field] = value;
+        setLoginData(newLoginData);
     }
     const handleRegisterSubmit = e => {
+        if (loginData.password !== loginData.password2) {
+            alert('Your password Did Not match');
+            return
+        }
+        registerUser(loginData.email, loginData.password, loginData.name);
         e.preventDefault();
     }
     return (
@@ -17,7 +29,7 @@ const Register = () => {
             <Grid container spacing={2}>
                 <Grid item sx={{ mt: 8 }} xs={12} md={6}>
                     <Typography variant="body1" gutterBottom>Register</Typography>
-                    <form onSubmit={handleRegisterSubmit}>
+                    {!isLoading && <form onSubmit={handleRegisterSubmit}>
                         <TextField
                             sx={{ width: '75%', m: 1 }}
                             id="standard-basic"
@@ -56,8 +68,10 @@ const Register = () => {
                             to="/login">
                             <Button variant="text">Already Registered? Please Login</Button>
                         </NavLink>
-                    </form>
-
+                    </form>}
+                    {isLoading && <CircularProgress />}
+                    {user?.email && <Alert severity="success">User Created successfully!</Alert>}
+                    {authError && <Alert severity="error">{authError}</Alert>}
                 </Grid>
                 <Grid item xs={12} md={6}>
                     <img style={{ width: '100%' }} src={loginImg} alt="" />
