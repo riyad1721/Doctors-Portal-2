@@ -25,6 +25,7 @@ const verticalCenter = {
     alignItems: 'center',
     height: 400
 }
+
 const Banner = () => {
     return (
         <div>
